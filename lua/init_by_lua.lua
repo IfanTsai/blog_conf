@@ -11,7 +11,7 @@ uuid.seed()
 cjson.encode_empty_table_as_object(false)
 
 -- read configure file
-local f, err = io.open ('/usr/local/openresty/nginx/conf/lua/cai.json', 'r')
+local f, err = io.open('/usr/local/openresty/nginx/conf/lua/cai.json', 'r')
 if f == nil then
     error(err)
 end
@@ -22,7 +22,7 @@ cai_conf = cjson.decode(cai_conf)
 -- set config
 redis_conf = cai_conf['redis_conf']
 editor_domain = cai_conf['editor_domain']
-
+ip_black_list = cai_conf['ip_black_list']
 
 is_null = function(arg)
     return nil == arg or ngx.null == arg
@@ -54,7 +54,7 @@ is_not_empty = function(cnt, ...)
 end
 
 ungzip = function(headers, body)
-	local encoding = headers['Content-Encoding']
+    local encoding = headers['Content-Encoding']
     if 'gzip' == encoding then
         local stream = zlib.inflate()
         body = stream(body)

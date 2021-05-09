@@ -1,6 +1,5 @@
-local ip_black_list = {
+local ip_black_list = ip_black_list
 
-}
 local ip = get_client_ip()
 if ip_black_list[ip] then
     ngx.exit(403)
