@@ -5,38 +5,52 @@ if ip_black_list[ip] then
     ngx.exit(403)
 end
 
+local rds = redis:new(redis_conf)
+local security_shm = ngx.shared.security_shm
+
+local ban_ip_time = 3600 * 12
+local black_ip_token = 'black_' .. ip
+
+-- Ban ip
+local is_black_ip = rds:exists(black_ip_token)
+if 1 == is_black_ip then
+    ngx.exit(403)
+end
+
+is_black_ip = security_shm:get(black_ip_token)
+if 1 == is_black_ip then
+    rds:set(black_ip_token, 1, ban_ip_time)
+    ngx.exit(403)
+end
+
 local ua = ngx.var.http_user_agent
-local uri = ngx.var.request_uri
+--local uri = ngx.var.request_uri   -- with args
+local uri = ngx.var.uri
 local url = ngx.var.host .. uri
 local req_time_out = 5
 local req_max_times = 8
 local req_forbide_time = 3600
 
 ua = is_null(ua) and 'unknown' or ua
+local req_token = 'req_' .. ip .. '_' .. ngx.md5(url .. ua)
+local black_token = 'black_' .. req_token
 
-local rds = redis:new(redis_conf)
+-- Block frequent access to the same uri
+local black_req = rds:exists(black_token)
+if 1 == black_req then
+    ngx.exit(403)
+end
 
-local token = 'req_' .. ip .. '_' .. ngx.md5(url .. ua)
-local req, err = rds:exists(token)
-if err then return end
-if 0 == req then
-    local _, err = rds:incr(token, req_time_out)
-    if err then return end
+local exist_req = rds:exists(req_token)
+if 0 == exist_req then
+    rds:set(req_token, 1, req_time_out)
 else
-    local times, err = rds:get(token)
-    if err then return end
-    if tonumber(times) >= req_max_times then
-        local black_req, err = rds:exists('black_' .. token)
-        if err then return end
-        if 0 == black_req then
-            local _, err = rds:set('black_' .. token, 1, req_forbide_time)
-            if err then return end
-            local _, err = rds:expire(token, req_forbide_time)
-            if err then return end
-        end
+    local req_times = rds:get(req_token)
+    if tonumber(req_times) >= req_max_times then
+        rds:set(black_token, 1, req_forbide_time)
+        --rds:expire(req_token, req_forbide_time)
         ngx.exit(403)
     else
-        local _, err = rds:incr(token)
-        if err then return end
+        rds:incr(req_token)
     end
 end
