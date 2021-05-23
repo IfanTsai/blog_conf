@@ -19,6 +19,7 @@ if not err and is_not_null(res) then
 end
 
 local httpc = http:new()
+httpc.set_timeout(60 * 1000)
 local res = httpc:request_uri(editor_domain .. '/editor/run', {
     method='POST',
     body=body,
