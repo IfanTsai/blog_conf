@@ -14,3 +14,4 @@ scgi_params.default
 uwsgi_params
 uwsgi_params.default
 win-utf
+.vscode

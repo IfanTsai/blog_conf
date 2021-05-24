@@ -1,15 +1,21 @@
+local ngx = ngx
+local redis = require 'resty.redis-util'
+local cai = require 'cai'
+local get_client_ip = cai.get_client_ip
+local is_null = cai.is_null
+local redis_conf = redis_conf
 local ip_black_list = ip_black_list
+local security_shm = ngx.shared.security_shm
 
 local ip = get_client_ip()
 if ip_black_list[ip] then
     ngx.exit(403)
 end
 
-local rds = redis:new(redis_conf)
-local security_shm = ngx.shared.security_shm
-
 local ban_ip_time = 3600 * 12
 local black_ip_token = 'black_' .. ip
+
+local rds = redis:new(redis_conf)
 
 -- Ban ip
 local is_black_ip = rds:exists(black_ip_token)
