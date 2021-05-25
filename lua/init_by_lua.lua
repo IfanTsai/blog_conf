@@ -36,6 +36,8 @@ cai_conf = cjson.decode(cai_conf)
 assert(cai_conf, 'cai_conf json decode failed!')
 
 -- set config
-redis_conf = cai_conf['redis_conf']
+redis_conf    = cai_conf['redis_conf']
 editor_domain = cai_conf['editor_domain']
 ip_black_list = cai_conf['ip_black_list']
+auth_md5      = cai_conf['auth_md5']
+auth_salt     = cai_conf['auth_salt']

@@ -77,7 +77,7 @@ _M.get_post_data = function(not_empty)
         f:close()
     end
 
-	-- unzip
+    -- unzip
     body = _M.ungzip(ngx.req.get_headers(), body)
 
     if not_empty and _M.is_null(body) then
