@@ -9,6 +9,7 @@ _M.str_find = function(s1, s2, is_re, pos)
         local ctx = { pos = pos or 1 }
         return ngx.re.find(s1, s2, 'jo', ctx)
     end
+
     return string.find(s1, s2, 1, true)
 end
 
@@ -29,11 +30,13 @@ _M.is_args_empty = function(cnt, ...)
     if cnt ~= #args then
         return true
     end
+
     for _, v in ipairs(args) do
         if _M.is_null(v) or 0 == #v then
             return true
         end
     end
+
     return false
 end
 
@@ -43,18 +46,22 @@ _M.ungzip = function(headers, body)
         local stream = zlib.inflate()
         body = stream(body)
     end
+
     return body
 end
 
 _M.get_client_ip = function()
     local headers = ngx.req.get_headers()
     local ip = headers['X-Real-IP']
+
     if _M.is_null(ip) then
         ip = headers['x_forwarded_for']
     end
+
     if _M.is_null(ip) then
         ip = ngx.var.remote_addr
     end
+
     return ip
 end
 

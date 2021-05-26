@@ -30,7 +30,7 @@ uuid.seed(seed)
 -- read configure file
 f, err = io.open('/usr/local/openresty/nginx/conf/lua/cai.json', 'r')
 assert(f, err)
-local cai_conf = f:read("*a")
+local cai_conf = f:read('*a')
 f:close()
 cai_conf = cjson.decode(cai_conf)
 assert(cai_conf, 'cai_conf json decode failed!')
