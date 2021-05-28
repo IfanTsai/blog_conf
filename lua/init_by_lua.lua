@@ -1,8 +1,12 @@
 local ngx = ngx
 local cjson = require 'cjson.safe'
 local uuid  = require 'resty.jit-uuid'
+local process = require 'ngx.process'
 -- https://github.com/openresty/openresty/issues/510
 zlib = require 'zlib'
+
+local conf_path = '/usr/local/openresty/nginx/conf/json/conf.json'
+local ip_black_list_path = '/usr/local/openresty/nginx/conf/json/ip_black_list.json'
 
 -- table.new     = require 'table.new'
 -- table.isempty = require 'table.isempty'
@@ -28,16 +32,20 @@ end
 uuid.seed(seed)
 
 -- read configure file
-f, err = io.open('/usr/local/openresty/nginx/conf/lua/cai.json', 'r')
+f, err = io.open(conf_path, 'r')
 assert(f, err)
 local cai_conf = f:read('*a')
 f:close()
-cai_conf = cjson.decode(cai_conf)
-assert(cai_conf, 'cai_conf json decode failed!')
+cai_conf, err = cjson.decode(cai_conf)
+assert(cai_conf, err)
 
 -- set config
 redis_conf    = cai_conf['redis_conf']
 editor_domain = cai_conf['editor_domain']
-ip_black_list = cai_conf['ip_black_list']
 auth_md5      = cai_conf['auth_md5']
 auth_salt     = cai_conf['auth_salt']
+
+-- enable privileged process
+local ok
+ok, err = process.enable_privileged_agent()
+assert(ok, err)
