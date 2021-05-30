@@ -7,6 +7,22 @@ local request_time = tonumber(ngx_var.request_time)
 local metric_requests = metric_requests
 local metric_uri = metric_uri
 local metric_latency = metric_latency
+local get_client_ip = require 'cai'.get_client_ip
+local security_shm = ngx.shared.security_shm
+
+--[[
+    If the client sent a malformed HTTP request line which aborted the HTTP protocol parsing.
+    Meanwhile, if you have a log_by_lua* directive inside HTTP block directly,
+    the Lua code specified by this directive still has a chance to run,
+    and when you fetch $request_uri or $uri  in your Lua code, you will get nil.
+]]
+if nil == uri then
+    -- ban ip
+    local req_forbide_time = 60
+    local black_token = 'black_' .. get_client_ip()
+    security_shm:set(black_token, 1, req_forbide_time)
+    return
+end
 
 metric_requests:inc(1, {
     server_name,
