@@ -47,12 +47,11 @@ if 1 == black_req then
     ngx.exit(403)
 end
 
-local exist_req = rds:exists(req_token)
-if 0 == exist_req then
+local req_times = tonumber(rds:get(req_token))
+if nil == req_times then
     rds:set(req_token, 1, req_time_out)
 else
-    local req_times = rds:get(req_token)
-    if tonumber(req_times) >= req_max_times then
+    if req_times >= req_max_times then
         rds:set(black_token, 1, req_forbide_time)
         --rds:expire(req_token, req_forbide_time)
         ngx.exit(403)
