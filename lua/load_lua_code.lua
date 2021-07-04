@@ -1,5 +1,5 @@
 local ngx = ngx
-local get_post_data = require 'cai'.get_post_data
+local get_post_json = require 'cai'.get_post_json
 local get_uri_args = ngx.req.get_uri_args
 local auth_salt = auth_salt
 local auth_md5 = auth_md5
@@ -15,7 +15,7 @@ if md5 ~= auth_md5 then
     ngx.exit(401)
 end
 
-local code = get_post_data(true)
+local code = get_post_json()['data']
 local func, err = loadstring(code)
 if not func then
     ngx.say('failed to load code, err: ', err)

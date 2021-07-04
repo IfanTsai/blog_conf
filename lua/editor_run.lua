@@ -24,20 +24,25 @@ local md5 = ngx.md5(body)
 local rds = redis:new(redis_conf)
 
 local key = 'editor_run_' .. md5
-local data, err = rds:get(key)
-if not err and is_not_null(data) then
-    rds:set(key, data, 60 * 60 * 1)
-    ngx.say(data)
+local res, err = rds:get(key)
+if not err and is_not_null(res) then
+    rds:set(key, res, 60 * 60 * 1)
+    ngx.say(res)
     ngx.exit(200)
 end
 
 local httpc = http:new()
 httpc:set_timeout(60 * 1000)
-local res = httpc:request_uri(editor_domain .. '/editor/run', {
-    method='POST',
-    body=body,
+res, err = httpc:request_uri(editor_domain .. '/editor/run', {
+    method = 'POST',
+    body = body,
 })
 httpc:close()
+
+if err then
+    ngx.log(ngx.ERR, "request failed: ", err)
+    ngx.exit(500)
+end
 
 if is_null(res) or 200 ~= res.status then
     ngx.log(ngx.ERR, 'http request /editor/run error, status: ' .. res.status)

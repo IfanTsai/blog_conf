@@ -24,17 +24,23 @@ if nil == uri then
     return
 end
 
+if 403 <= ngx.status <= 404 then
+    return
+end
+
 metric_requests:inc(1, {
     server_name,
-    status
+    status,
 })
 
 metric_uri:inc(1, {
     server_name,
     uri,
-    status
+    status,
 })
 
 metric_latency:observe(request_time, {
-    server_name
+    server_name,
+    uri,
+    status,
 })

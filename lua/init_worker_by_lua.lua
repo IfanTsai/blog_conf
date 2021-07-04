@@ -51,7 +51,7 @@ local reload = function()
     os.execute('kill -HUP ' .. pid)
 end
 
-local flush_redis_black_ip_to_file = function()
+local flush_redis_black_ip_to_file = function(premature)
     local rds = redis:new(redis_conf)
     local res = rds:scan(0, 'match', 'black_*')
     local cursor, keys, err = res[1], res[2], res[3]
@@ -115,5 +115,5 @@ prometheus = require 'prometheus'.init('prometheus_metrics_shm', {
 
 metric_requests = prometheus:counter('requests_total', 'Number of HTTP requests', {'host', 'status'})
 metric_uri = prometheus:counter('uri_total', 'Number of HTTP uri', {'host', 'uri', 'status'})
-metric_latency = prometheus:histogram('request_duration_seconds', 'HTTP request latency', {'host'})
+metric_latency = prometheus:histogram('request_duration_seconds', 'HTTP request latency', {'host', 'uri', 'status'})
 metric_connections = prometheus:gauge('connections', 'Number of HTTP connections', {'state'})
