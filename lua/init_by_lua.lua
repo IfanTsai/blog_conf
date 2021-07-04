@@ -44,6 +44,7 @@ redis_conf    = cai_conf['redis_conf']
 editor_domain = cai_conf['editor_domain']
 auth_md5      = cai_conf['auth_md5']
 auth_salt     = cai_conf['auth_salt']
+qmsg_key      = cai_conf['qmsg_key']
 
 -- enable privileged process
 local ok
