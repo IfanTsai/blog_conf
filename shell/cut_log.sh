@@ -4,7 +4,7 @@
 logs_path=/usr/local/openresty/nginx/logs/
 pid_path=/usr/local/openresty/nginx/logs/nginx.pid
 
-servers=('ngx' 'hexo' 'api' 'test')
+servers=('ngx' 'hexo' 'api' 'test' 'grafana')
 
 for s in ${servers[@]}; do
     mv ${logs_path}${s}/access.log ${logs_path}${s}/access-$(date -d "yesterday" +%Y-%m-%d).log
