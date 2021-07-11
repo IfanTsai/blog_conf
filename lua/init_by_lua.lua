@@ -2,6 +2,7 @@ local ngx = ngx
 local cjson = require 'cjson.safe'
 local uuid  = require 'resty.jit-uuid'
 local process = require 'ngx.process'
+local python = require 'python'
 -- https://github.com/openresty/openresty/issues/510
 zlib = require 'zlib'
 
@@ -14,6 +15,9 @@ local conf_path = '/usr/local/openresty/nginx/conf/json/conf.json'
 -- table.clone   = require 'table.clone'
 
 cjson.encode_empty_table_as_object(false)
+
+python.execute('import sys')
+python.execute('sys.path.insert(0, "/usr/local/openresty/nginx/conf/python/")')
 
 -- seed the random number generator
 local seed = nil

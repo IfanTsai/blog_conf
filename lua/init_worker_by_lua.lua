@@ -3,6 +3,7 @@ local ngx_timer_every = ngx.timer.every
 local redis = require 'resty.redis-util'
 local process = require 'ngx.process'
 local cjson = require 'cjson.safe'
+local python = require 'python'
 
 local ip_black_list_path = '/usr/local/openresty/nginx/conf/json/ip_black_list.json'
 local ip_white_list_path = '/usr/local/openresty/nginx/conf/json/ip_white_list.json'
@@ -97,8 +98,11 @@ end
 
 -- privileged agent process
 if 'privileged agent' == process.type() then
+    python.import('xdp_drop').load_xdp('eth0', ip_black_list_path)
+
     local ok, err = ngx_timer_every(3600, flush_redis_black_ip_to_file)
     assert(ok, err)
+
     return
 end
 

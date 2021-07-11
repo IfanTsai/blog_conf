@@ -16,3 +16,5 @@ win-utf
 .vscode
 json/*.json
 tags
+__pycache__
+*.pyc
