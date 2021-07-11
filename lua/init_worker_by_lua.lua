@@ -5,6 +5,7 @@ local process = require 'ngx.process'
 local cjson = require 'cjson.safe'
 
 local ip_black_list_path = '/usr/local/openresty/nginx/conf/json/ip_black_list.json'
+local ip_white_list_path = '/usr/local/openresty/nginx/conf/json/ip_white_list.json'
 
 local read_json_file = function(path)
     local f, err = io.open(path, 'r')
@@ -103,16 +104,21 @@ end
 
 -- worker process
 
--- read ip black list
+-- read ip black and white list
 local err
 ip_black_list, err = read_json_file(ip_black_list_path)
 assert(ip_black_list, err)
 
+ip_white_list, err = read_json_file(ip_white_list_path)
+assert(ip_white_list, err)
+
+-- init prometheus
 prometheus = require 'prometheus'.init('prometheus_metrics_shm', {
     prefix = "nginx_http_",
     sync_interval = 1,
 })
 
+-- register prometheus metrics
 metric_requests = prometheus:counter('requests_total', 'Number of HTTP requests', {'host', 'status'})
 metric_uri = prometheus:counter('uri_total', 'Number of HTTP uri', {'host', 'uri', 'status'})
 metric_latency = prometheus:histogram('request_duration_seconds', 'HTTP request latency', {'host', 'uri', 'status'})

@@ -8,7 +8,7 @@ local ip_black_list = ip_black_list
 local security_shm = ngx.shared.security_shm
 
 local ip = get_client_ip()
-if ip_black_list[ip] then
+if not ip_white_list[ip] and ip_black_list[ip] then
     ngx.exit(403)
 end
 

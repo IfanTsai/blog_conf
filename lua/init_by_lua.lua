@@ -6,7 +6,6 @@ local process = require 'ngx.process'
 zlib = require 'zlib'
 
 local conf_path = '/usr/local/openresty/nginx/conf/json/conf.json'
-local ip_black_list_path = '/usr/local/openresty/nginx/conf/json/ip_black_list.json'
 
 -- table.new     = require 'table.new'
 -- table.isempty = require 'table.isempty'
