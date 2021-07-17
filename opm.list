@@ -1,0 +1,5 @@
+thibaultcha/lua-resty-jit-uuid                               0.0.7
+ledgetech/lua-resty-http                                     0.14
+anjia0532/lua-resty-redis-util                               0.05
+hamishforbes/lua-ffi-zlib                                    0.5.0
+knyar/nginx-lua-prometheus                                   0.20210206
