@@ -48,6 +48,8 @@ editor_domain = cai_conf['editor_domain']
 auth_md5      = cai_conf['auth_md5']
 auth_salt     = cai_conf['auth_salt']
 qmsg_key      = cai_conf['qmsg_key']
+qcloud_secret_id = cai_conf['qcloud_secret_id']
+qcloud_secret_key = cai_conf['qcloud_secret_key']
 
 -- enable privileged process
 local ok

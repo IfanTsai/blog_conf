@@ -1,6 +1,8 @@
 local ngx = ngx
 local cjson = require 'cjson.safe'
 local zlib = zlib
+local auth_salt = auth_salt
+local auth_md5 = auth_md5
 
 local _M = { }
 
@@ -103,6 +105,18 @@ _M.get_post_json = function()
     end
 
     return data
+end
+
+_M.check_token = function(args)
+    local token = args.token
+    if nil == token then
+        ngx.exit(406)
+    end
+
+    local md5 = ngx.md5(token .. auth_salt)
+    if md5 ~= auth_md5 then
+        ngx.exit(401)
+    end
 end
 
 return _M
