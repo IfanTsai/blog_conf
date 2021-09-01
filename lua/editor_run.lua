@@ -1,15 +1,16 @@
-local ngx = ngx
-local cjson = require 'cjson.safe'
-local http  = require 'resty.http'
-local redis = require 'resty.redis-util'
-local cai   = require 'cai'
+local ngx           = ngx
+local cjson         = require 'cjson.safe'
+local http          = require 'resty.http'
+local redis         = require 'resty.redis-util'
+local cai           = require 'cai'
+local cai_conf      = require 'cai_conf'
 local get_post_data = cai.get_post_data
 local is_args_empty = cai.is_args_empty
-local is_not_null = cai.is_not_null
-local is_null = cai.is_null
-local ungzip = cai.ungzip
-local redis_conf = redis_conf
-local editor_domain = editor_domain
+local is_not_null   = cai.is_not_null
+local is_null       = cai.is_null
+local ungzip        = cai.ungzip
+local redis_conf    = cai_conf.redis_conf
+local editor_domain = cai_conf.editor_domain
 
 local body = get_post_data(true)
 local json = cjson.decode(body)

@@ -1,11 +1,13 @@
-local ngx = ngx
-local redis = require 'resty.redis-util'
-local cai = require 'cai'
+local ngx           = ngx
+local redis         = require 'resty.redis-util'
+local cai           = require 'cai'
+local cai_conf      = require 'cai_conf'
 local get_client_ip = cai.get_client_ip
-local is_null = cai.is_null
-local redis_conf = redis_conf
-local ip_black_list = ip_black_list
-local security_shm = ngx.shared.security_shm
+local is_null       = cai.is_null
+local redis_conf    = cai_conf.redis_conf
+local ip_black_list = cai_conf.ip_black_list
+local ip_white_list = cai_conf.ip_white_list
+local security_shm  = ngx.shared.security_shm
 
 local ip = get_client_ip()
 if not ip_white_list[ip] and ip_black_list[ip] then

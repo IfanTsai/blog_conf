@@ -1,6 +1,7 @@
-local ngx = ngx
-local qmsg_key = qmsg_key
-local http = require 'resty.http'
+local ngx           = ngx
+local cai_conf      = require 'cai_conf'
+local qmsg_key      = cai_conf.qmsg_key
+local http          = require 'resty.http'
 local get_post_data = require 'cai'.get_post_data
 
 local body = get_post_data(true)

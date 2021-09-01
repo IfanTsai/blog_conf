@@ -43,8 +43,8 @@ RUN ["/bin/bash", "-c", "apt update \
     && opm get thibaultcha/lua-resty-jit-uuid \
                 ledgetech/lua-resty-http \
                 anjia0532/lua-resty-redis-util \
-                hamishforbes/lua-ffi-zlib \
                 knyar/nginx-lua-prometheus \
+                jkeys089/lua-resty-hmac \
     && rm -rf /var/cache/apk \
     && rm -rf /var/lib/apt/lists \
     && apt purge -y python gcc make cmake wget git curl bison flex \

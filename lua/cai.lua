@@ -1,10 +1,14 @@
-local ngx = ngx
-local cjson = require 'cjson.safe'
-local zlib = zlib
-local auth_salt = auth_salt
-local auth_md5 = auth_md5
+local ngx       = ngx
+local cjson     = require 'cjson.safe'
+local zlib      = require 'zlib'
+local cai_conf  = require 'cai_conf'
+local auth_salt = cai_conf.auth_salt
+local auth_md5  = cai_conf.auth_md5
+local string    = string
+local ipairs    = ipairs
+local io        = io
 
-local _M = { }
+local _M = { _VERSION = '0.01' }
 
 _M.str_find = function(s1, s2, is_re, pos)
     if is_re then
@@ -127,7 +131,14 @@ redis_connect = function(host, port, passwd)
     rds:set_timeout(1000)  -- 1000 ms
     local ok, err = rds:connect(host, port)
     if not ok then
-        ngx.log(ngx.ERR, 'can not connect to redis: ' .. tostring(host) .. ':' .. tostring(port) .. ' error: ' .. err )
+        ngx.log(ngx.ERR, {
+            'can not connect to redis: ',
+            tostring(host),
+            ':',
+            tostring(port),
+            ' error: ',
+            err,
+        })
         return nil
     end
 
@@ -136,7 +147,13 @@ redis_connect = function(host, port, passwd)
         if 'number' == type(count) and 0 == count then
             local ok, err = rds:auth(passwd)
             if not ok then
-                ngx.log(ngx.ERR, 'redis auth error: ' .. tostring(host) .. ':' .. tostring(port) .. ' error: ' .. err )
+                ngx.log(ngx.ERR, {
+                    'redis auth error: ',
+                    tostring(host), ':',
+                    tostring(port),
+                    ' error: ',
+                    err,
+                })
                 return nil
             end
         elseif err then

@@ -1,12 +1,14 @@
-local ngx = require 'ngx'
-local cjson = require 'cjson.safe'
-local hmac = require "resty.hmac"
-local http = require 'resty.http'
-local get_uri_args = ngx.req.get_uri_args
-local check_token = require 'cai'.check_token
-local get_post_json = require 'cai'.get_post_json
-local qcloud_secret_id = qcloud_secret_id
-local qcloud_secret_key = qcloud_secret_key
+local ngx               = ngx
+local cjson             = require 'cjson.safe'
+local hmac              = require "resty.hmac"
+local http              = require 'resty.http'
+local cai               = require 'cai'
+local cai_conf          = require 'cai_conf'
+local get_uri_args      = ngx.req.get_uri_args
+local check_token       = cai.check_token
+local get_post_json     = cai.get_post_json
+local qcloud_secret_id  = cai_conf.qcloud_secret_id
+local qcloud_secret_key = cai_conf.qcloud_secret_key
 
 local ok, new_tab = pcall(require, 'table.new')
 if not ok then
@@ -114,7 +116,7 @@ end
 
 local res_body = cjson.decode(res.body)
 if not res_body['code'] or tonumber(res_body['code']) ~= 0 then
-    ngx.log(ngx.ERR, 'refresh_cdn_url: response body status code is not 0, body: ', res.body)
+    ngx.log(ngx.ERR, 'response body status code is not 0, body: ', res.body)
     ngx.exit(500)
 end
 
