@@ -5,9 +5,16 @@ if ngx.status < 400 or 403 == ngx.status then
 end
 
 local get_client_ip = require 'cai'.get_client_ip
-local security_shm = ngx.shared.security_shm
+local security_shm  = ngx.shared.security_shm
+local cai_conf      = require 'cai_conf'
+local ip_white_list = cai_conf.ip_white_list
 
 local ip = get_client_ip()
+
+if ip_white_list[ip] then
+    return
+end
+
 local req_token = 'error_res_' .. ip
 local black_token = 'black_' .. ip
 local req_time_out = 3600

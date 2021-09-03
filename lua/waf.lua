@@ -10,7 +10,12 @@ local ip_white_list = cai_conf.ip_white_list
 local security_shm  = ngx.shared.security_shm
 
 local ip = get_client_ip()
-if not ip_white_list[ip] and ip_black_list[ip] then
+
+if ip_white_list[ip] then
+    return
+end
+
+if ip_black_list[ip] then
     ngx.exit(403)
 end
 
