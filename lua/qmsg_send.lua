@@ -15,6 +15,7 @@ local body = get_post_data(true)
 body = string.gsub(body, '\\n', '%0A')
 
 local httpc = http:new()
+httpc:set_timeouts(30 * 1000, 30 * 1000, 30 * 1000)
 local res, err = httpc:request_uri('https://qmsg.zendee.cn/send/' .. qmsg_key, {
     method = 'GET',
     query = {
@@ -24,18 +25,18 @@ local res, err = httpc:request_uri('https://qmsg.zendee.cn/send/' .. qmsg_key, {
 httpc:close()
 
 if err then
-    ngx.log(ngx.ERR, 'qmsg_send: request failed', err)
+    ngx.log(ngx.ERR, 'request failed', err)
     ngx.exit(500)
 end
 
 if 200 ~= res.status then
-    ngx.log(ngx.ERR, 'qmsg_send: request failed, res status: ', tostring(res.status))
+    ngx.log(ngx.ERR, 'request failed, res status: ', tostring(res.status))
     ngx.exit(500)
 end
 
 body = cjson.decode(res.body)
 if body['success'] == false then
-    ngx.log(ngx.ERR, 'qmsg_send: error, res: ', res.body)
+    ngx.log(ngx.ERR, 'res: ', res.body)
     ngx.exit(500)
 end
 
