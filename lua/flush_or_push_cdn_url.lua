@@ -7,27 +7,34 @@ local cai_conf          = require 'cai_conf'
 local get_uri_args      = ngx.req.get_uri_args
 local check_token       = cai.check_token
 local get_post_json     = cai.get_post_json
+local new_tab           = cai.new_tab
 local qcloud_secret_id  = cai_conf.qcloud_secret_id
 local qcloud_secret_key = cai_conf.qcloud_secret_key
 
-local ok, new_tab = pcall(require, 'table.new')
-if not ok then
-    new_tab = function(narr, nreci) return {} end
-end
 
-check_token(get_uri_args())
+local args = get_uri_args()
+check_token(args)
+
+local command = args.command
+if 'flush' ~= command and 'push' ~= command then
+    ngx.exit(406)
+end
 
 local method = 'POST'
 local protocol = 'https://'
 local host = 'cdn.api.qcloud.com'
 local uri = '/v2/index.php'
-local action = 'RefreshCdnUrl'
+local action = 'FlushOrPushOverall'
 
 local params = {
     ['Action'] = action,
     ['SecretId'] = qcloud_secret_id,
     ['Timestamp'] = ngx.time(),
     ['Nonce'] = math.random(1000),
+    ['type'] = 'url',
+    ['mainland'] = 1,
+    ['oversea'] = 1,
+    ['command'] = command
 }
 
 local urls = get_post_json()['urls']
@@ -70,7 +77,7 @@ if not hmac_sha1 then
     ngx.exit(500)
 end
 
-ok = hmac_sha1:update(sig_url)
+local ok = hmac_sha1:update(sig_url)
 if not ok then
     ngx.log(ngx.ERR, 'failed to add data')
     ngx.exit(500)
@@ -105,12 +112,12 @@ end
 httpc:close()
 
 if not res then
-    ngx.log(ngx.ERR, 'refresh_cdn_url: request failed', err)
+    ngx.log(ngx.ERR, 'request failed', err)
     ngx.exit(500)
 end
 
 if 200 ~= res.status then
-    ngx.log(ngx.ERR, 'refresh_cdn_url: response header status code is not 200')
+    ngx.log(ngx.ERR, 'response header status code is not 200')
     ngx.exit(500)
 end
 
