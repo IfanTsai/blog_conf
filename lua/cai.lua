@@ -125,7 +125,7 @@ end
 
 local ok, new_tab = pcall(require, 'table.new')
 if not ok then
-    new_tab = function(narr, nreci) return {} end
+    new_tab = function(_, _) return {} end
 end
 
 _M.new_tab = new_tab

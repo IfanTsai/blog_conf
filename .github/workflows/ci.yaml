@@ -1,0 +1,36 @@
+name: Run luacheck and build test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  lint:
+    name: luacheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install luacheck
+        run: |
+            sudo apt update
+            sudo apt install -y luarocks
+            sudo luarocks install luacheck
+      - name: Run luacheck
+        run: luacheck .
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: build
+      run: |
+          docker build -t blog_conf:$IMAGE_TAG .
