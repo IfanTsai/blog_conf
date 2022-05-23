@@ -8,7 +8,7 @@ LABEL maintainer="Ifan Tsai <i@caiyifan.cn>"
 ENV TZ=Asia/Shanghai
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG RESTY_VERSION="1.19.3.2"
+ARG RESTY_VERSION="1.21.4.1"
 
 RUN ["/bin/bash", "-c", "apt update \
     && apt install -y libpcre3-dev libz-dev libssl-dev perl \
@@ -23,7 +23,7 @@ RUN ["/bin/bash", "-c", "apt update \
     && cd /tmp \
     && rm -rf openresty-${RESTY_VERSION}.tar.gz openresty-${RESTY_VERSION} \
     && apt install -y bison build-essential flex curl libedit-dev \
-        libllvm7 llvm-7-dev libclang-7-dev python python3 python3-distutils zlib1g-dev libelf-dev libfl-dev \
+        libllvm12 llvm-12-dev libclang-12-dev python python3 python3-distutils zlib1g-dev libelf-dev libfl-dev \
     && git clone https://github.com/iovisor/bcc.git \
     && mkdir bcc/build; cd bcc/build \
     && cmake .. \
