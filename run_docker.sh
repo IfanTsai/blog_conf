@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker build -t my_blog .
+docker build -t my_blog --progress=plain .
 
 docker volume create openresty
 
