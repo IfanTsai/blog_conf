@@ -14,7 +14,6 @@ uwsgi_params
 uwsgi_params.default
 win-utf
 .vscode
-json/*.json
 tags
 __pycache__
 *.pyc
